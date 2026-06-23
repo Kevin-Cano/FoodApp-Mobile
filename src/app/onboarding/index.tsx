@@ -1,4 +1,6 @@
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 import {
   Dimensions,
   NativeScrollEvent,
@@ -53,8 +55,14 @@ export default function OnBoarding() {
     );
   };
 
-  const handleComplete = () => {
-    console.log("go");
+  const handleComplete = async () => {
+    try {
+      await AsyncStorage.setItem("hasCompletedOnboarding", "true");
+      router.replace("/(tabs)");
+    } catch (error) {
+      console.log("Erreur lors de la sauvegarde :", error);
+      router.replace("/(tabs)");
+    }
   };
 
   return (
@@ -103,10 +111,10 @@ export default function OnBoarding() {
             key={`dot-${index}`}
             className={`rounded-full mx-1 ${
               currentIndex === index
-                ? "w-6 h-1 bg-[#EBA352]"
+                ? "w-6 h-1 bg-[#EC994B]"
                 : "w-3 h-1 bg-[#F4D7B8]"
             }`}
-            style={{ height: 4, borderRadius: 2, marginHorizontal: 4, width: currentIndex === index ? 24 : 12, backgroundColor: currentIndex === index ? "#EBA352" : "#F4D7B8" }}
+            style={{ height: 4, borderRadius: 2, marginHorizontal: 4, width: currentIndex === index ? 24 : 12, backgroundColor: currentIndex === index ? "#EC994B" : "#F4D7B8" }}
           />
         ))}
       </View>
@@ -119,8 +127,8 @@ export default function OnBoarding() {
           style={{ position: "absolute", bottom: 50, left: 30, right: 30 }}
         >
           <TouchableOpacity
-            className="bg-[#EBA352] py-[18px] rounded-[30px] items-center justify-center shadow-lg shadow-black/30"
-            style={{ backgroundColor: "#EBA352", paddingVertical: 18, borderRadius: 30, alignItems: "center", justifyContent: "center", elevation: 8 }}
+            className="bg-[#EC994B] py-[18px] rounded-[30px] items-center justify-center shadow-lg shadow-black/30"
+            style={{ backgroundColor: "#EC994B", paddingVertical: 18, borderRadius: 30, alignItems: "center", justifyContent: "center", elevation: 8 }}
             activeOpacity={0.8}
             onPress={handleComplete}
           >
