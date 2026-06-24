@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,11 @@ import {
   SafeAreaView,
   Platform,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { ChevronLeft, Star, MessageCircle } from 'lucide-react-native';
-import { getDishById } from '../../data/dishes';
+import { fetchMealById, type Meal } from '../../services/mealApi';
 import { NavBar } from '../../components/NavBar';
 
 const fakeNavBarProps = {
@@ -41,26 +42,56 @@ const fakeNavBarProps = {
 
 export default function FoodDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const dish = getDishById(id);
-
+  const [meal, setMeal] = useState<Meal | null>(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    fetchMealById(id)
+      .then((data) => {
+        setMeal(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [id]);
+
   const decrement = () => setQuantity((q) => Math.max(1, q - 1));
   const increment = () => setQuantity((q) => q + 1);
 
-  if (!dish) {
+  if (loading) {
     return (
       <SafeAreaView
-        className="flex-1 bg-white items-center justify-center"
-        style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        }}
       >
-        <Text style={{ color: '#888888', fontSize: 16 }}>Dish not found.</Text>
+        <ActivityIndicator size="large" color="#EC994B" />
+      </SafeAreaView>
+    );
+  }
+
+  if (!meal) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        }}
+      >
+        <Text style={{ color: '#888888', fontSize: 16 }}>Plat introuvable.</Text>
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView
-      className="flex-1 bg-white"
       style={{
         flex: 1,
         backgroundColor: 'white',
@@ -72,7 +103,13 @@ export default function FoodDetail() {
 
           {/* Header */}
           <View
-            style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24, paddingTop: 16, marginBottom: 24 }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 24,
+              paddingTop: 16,
+              marginBottom: 24,
+            }}
           >
             <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} style={{ padding: 4 }}>
               <ChevronLeft color="#333333" size={26} strokeWidth={2} />
@@ -90,7 +127,7 @@ export default function FoodDetail() {
           {/* Hero image */}
           <View style={{ paddingHorizontal: 24, marginBottom: 24 }}>
             <Image
-              source={dish.image}
+              source={{ uri: meal.image }}
               style={{ width: '100%', height: 240, borderRadius: 24 }}
               resizeMode="cover"
             />
@@ -98,21 +135,43 @@ export default function FoodDetail() {
 
           {/* Titre + quantité */}
           <View
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 24, marginBottom: 8 }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 24,
+              marginBottom: 8,
+            }}
           >
             <Text
               style={{ flex: 1, fontSize: 22, fontWeight: '800', color: '#333333', marginRight: 16 }}
               numberOfLines={1}
             >
-              {dish.title}
+              {meal.title}
             </Text>
             <View
-              style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#EC994B', borderRadius: 50, paddingHorizontal: 16, paddingVertical: 8 }}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: '#EC994B',
+                borderRadius: 50,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
             >
               <TouchableOpacity onPress={decrement} activeOpacity={0.7} style={{ paddingHorizontal: 4 }}>
                 <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>-</Text>
               </TouchableOpacity>
-              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold', marginHorizontal: 12, minWidth: 16, textAlign: 'center' }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  marginHorizontal: 12,
+                  minWidth: 16,
+                  textAlign: 'center',
+                }}
+              >
                 {quantity}
               </Text>
               <TouchableOpacity onPress={increment} activeOpacity={0.7} style={{ paddingHorizontal: 4 }}>
@@ -123,23 +182,29 @@ export default function FoodDetail() {
 
           {/* Sous-titre */}
           <Text style={{ paddingHorizontal: 24, color: '#888888', fontSize: 14, marginBottom: 20 }}>
-            {dish.description}
+            {meal.description}
           </Text>
 
           {/* Ratings */}
           <View
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 24, marginBottom: 24 }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 24,
+              marginBottom: 24,
+            }}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Star color="#EC994B" size={16} fill="#EC994B" />
               <Text style={{ color: '#333333', fontSize: 14, fontWeight: '600', marginLeft: 6 }}>
-                {dish.rating} Ratings
+                {meal.rating} Ratings
               </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <MessageCircle color="#888888" size={16} />
               <Text style={{ color: '#888888', fontSize: 14, marginLeft: 6 }}>
-                {dish.reviews} Reviews
+                {meal.reviews} Reviews
               </Text>
             </View>
           </View>
@@ -150,10 +215,10 @@ export default function FoodDetail() {
               Detail & Ingredient
             </Text>
             <Text style={{ fontSize: 14, color: '#888888', lineHeight: 22, marginBottom: 20 }}>
-              {dish.detailDescription}
+              {meal.detailDescription}
             </Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-              {dish.ingredients.map((item, i) => (
+              {meal.ingredients.map((item, i) => (
                 <Text key={i} style={{ width: '50%', fontSize: 14, color: '#333333', marginBottom: 8 }}>
                   • {item}
                 </Text>

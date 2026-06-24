@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, ImageSourcePropType } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 
 interface SuggestionCardProps {
-  image: ImageSourcePropType;
+  image: string;
   title: string;
 }
 
@@ -26,7 +26,7 @@ export function SuggestionCard({ image, title }: SuggestionCardProps) {
       {/* Partie gauche : Image collée au bord gauche */}
       <View style={{ flex: 0.45, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 0 }}>
         <Image 
-          source={image} 
+          source={{ uri: image }}
           style={{ width: '120%', height: '120%', marginLeft: -10 }}
           resizeMode="contain" 
         />

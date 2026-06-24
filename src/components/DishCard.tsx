@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, ImageSourcePropType } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Heart, Plus } from 'lucide-react-native';
 
 interface DishCardProps {
-  image: ImageSourcePropType;
+  image: string;
   title: string;
   description: string;
   price: string;
@@ -37,8 +37,8 @@ export function DishCard({ image, title, description, price, onPress }: DishCard
         style={{ width: '100%', height: 140, borderRadius: 18, marginBottom: 12, overflow: 'hidden', backgroundColor: '#F9FAFB', position: 'relative' }}
       >
         <Image 
-          source={image} 
-          className="w-full h-full" 
+          source={{ uri: image }}
+          className="w-full h-full"
           style={{ width: '100%', height: '100%' }}
           resizeMode="cover" 
         />
