@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { Bell, AlignRight } from 'lucide-react-native';
+import { router } from 'expo-router';
 import { SuggestionCard } from '../../components/SuggestionCard';
 import { DishCard } from '../../components/DishCard';
+import { dishes } from '../../data/dishes';
 
 export default function Home() {
   return (
@@ -64,18 +66,16 @@ export default function Home() {
             showsHorizontalScrollIndicator={false} 
             contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 10, paddingTop: 5 }}
           >
-            <DishCard 
-              image={require('@/assets/images/MainPage/pizza.png')}
-              title="Special Pizza"
-              description="With tommato sauce"
-              price="$12.50"
-            />
-            <DishCard 
-              image={require('@/assets/images/MainPage/dimsum.png')}
-              title="Special Dimsum"
-              description="With meat filling"
-              price="$8.95"
-            />
+            {dishes.map((dish) => (
+              <DishCard
+                key={dish.id}
+                image={dish.image}
+                title={dish.title}
+                description={dish.description}
+                price={dish.price}
+                onPress={() => router.push(`/food/${dish.id}` as any)}
+              />
+            ))}
           </ScrollView>
         </View>
 

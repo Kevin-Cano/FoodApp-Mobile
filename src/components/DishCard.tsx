@@ -7,13 +7,14 @@ interface DishCardProps {
   title: string;
   description: string;
   price: string;
+  onPress?: () => void;
 }
 
-export function DishCard({ image, title, description, price }: DishCardProps) {
+export function DishCard({ image, title, description, price, onPress }: DishCardProps) {
   return (
-    <View 
-      className="bg-white rounded-[24px] w-[170px] mr-5 p-3 border border-gray-100" 
-      style={{ 
+    <TouchableOpacity
+      className="bg-white rounded-[24px] w-[170px] mr-5 p-3 border border-gray-100"
+      style={{
         backgroundColor: 'white',
         borderRadius: 24,
         width: 170,
@@ -21,12 +22,14 @@ export function DishCard({ image, title, description, price }: DishCardProps) {
         padding: 12,
         borderWidth: 1,
         borderColor: '#F3F4F6',
-        elevation: 1, 
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 1 }, 
-        shadowOpacity: 0.03, 
-        shadowRadius: 3 
+        elevation: 1,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.03,
+        shadowRadius: 3
       }}
+      onPress={onPress}
+      activeOpacity={0.85}
     >
       {/* Image Container with Heart Icon */}
       <View 
@@ -85,6 +88,6 @@ export function DishCard({ image, title, description, price }: DishCardProps) {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
