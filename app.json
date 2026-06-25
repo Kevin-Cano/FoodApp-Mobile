@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "FoodApp",
-    "slug": "FoodApp",
+    "slug": "foodapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -39,6 +39,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f0504de3-f1ca-41d6-af7c-3681353c998c"
+      }
+    },
+    "owner": "aymericmarec"
   }
 }
