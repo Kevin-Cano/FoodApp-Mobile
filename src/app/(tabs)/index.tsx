@@ -14,24 +14,21 @@ import { Bell, AlignRight } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { SuggestionCard } from '../../components/SuggestionCard';
 import { DishCard } from '../../components/DishCard';
-import { fetchMealsByCategory, fetchRandomMeal, type Meal } from '../../services/mealApi';
+import { fetchMealsByCategory, type Meal } from '../../services/mealApi';
 
 export default function Home() {
   const [popularMeals, setPopularMeals] = useState<Meal[]>([]);
   const [newMenuMeals, setNewMenuMeals] = useState<Meal[]>([]);
-  const [featuredMeal, setFeaturedMeal] = useState<Meal | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       fetchMealsByCategory('Chicken'),
       fetchMealsByCategory('Seafood'),
-      fetchRandomMeal(),
     ])
-      .then(([popular, newMenu, featured]) => {
+      .then(([popular, newMenu]) => {
         setPopularMeals(popular.slice(0, 6));
         setNewMenuMeals(newMenu.slice(0, 6));
-        setFeaturedMeal(featured);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -144,14 +141,15 @@ export default function Home() {
         ) : (
           <>
             {/* Suggestion Card */}
-            {featuredMeal && (
-              <View
-                className="px-6 mb-8"
-                style={{ paddingHorizontal: 24, marginBottom: 32 }}
-              >
-                <SuggestionCard image={featuredMeal.image} title={featuredMeal.title} />
-              </View>
-            )}
+            <View
+              className="px-6 mb-8"
+              style={{ paddingHorizontal: 24, marginBottom: 32 }}
+            >
+              <SuggestionCard
+                image={require('@/assets/images/MainPage/noodle.png')}
+                title="Fried Noodles With Special Chicken Katsu"
+              />
+            </View>
 
             {/* Popular Section */}
             <View className="mb-8" style={{ marginBottom: 32 }}>
