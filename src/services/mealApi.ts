@@ -47,7 +47,8 @@ function transformSummary(m: ApiSummary, category: string): Meal {
 }
 
 function transformFull(m: Record<string, string | null>): Meal {
-  const instructions = m.strInstructions ?? '';
+  const rawInstructions = m.strInstructions ?? '';
+  const instructions = rawInstructions.replace(/STEP\s+\d+\r?\n/gi, '').trim();
   const description = [m.strCategory, m.strArea].filter(Boolean).join(' · ') || 'Meal';
   return {
     id: m.idMeal ?? '',
